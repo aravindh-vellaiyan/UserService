@@ -1,13 +1,12 @@
 package com.userservice.services;
 
-import com.userservice.dtos.LoginRequest;
-import com.userservice.dtos.SignupRequest;
 import com.userservice.exceptions.AuthenticationException;
 import com.userservice.exceptions.UserException;
 import com.userservice.models.Token;
 import com.userservice.models.User;
 import com.userservice.repositories.TokenRepository;
 import com.userservice.repositories.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -18,6 +17,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final Random randomGenerator = new Random(2589321423984L);
+
+    private static BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, TokenRepository tokenRepository){
         this.userRepository = userRepository;
