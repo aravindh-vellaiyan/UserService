@@ -1,9 +1,6 @@
 package com.userservice.controllers;
 
-import com.userservice.dtos.LoginRequest;
-import com.userservice.dtos.LogoutRequest;
-import com.userservice.dtos.LogoutResponse;
-import com.userservice.dtos.SignupRequest;
+import com.userservice.dtos.*;
 import com.userservice.models.Token;
 import com.userservice.models.User;
 import com.userservice.services.UserService;
@@ -21,8 +18,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public User signup(@RequestBody SignupRequest signupRequest){
-        return userService.signup(signupRequest.getEmail(), signupRequest.getName(), signupRequest.getPassword());
+    public SignupResponse signup(@RequestBody SignupRequest signupRequest){
+        return toSignupResponseDTO(userService.signup(signupRequest.getEmail(), signupRequest.getName(), signupRequest.getPassword()));
     }
 
     @PostMapping("/login")
@@ -35,6 +32,18 @@ public class UserController {
         userService.invalidateToken(logoutRequest.getToken());
         LogoutResponse response = new LogoutResponse();
         response.setMessage("Session logged out successfully.!");
+        return response;
+    }
+
+    private SignupResponse toSignupResponseDTO(User user) {
+        if (user == null) {
+            return null;
+        }
+        SignupResponse response = new SignupResponse();
+        response.setId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        response.setEmailVerified(user.isEmailVerified());
         return response;
     }
 }

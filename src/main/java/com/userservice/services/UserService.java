@@ -18,11 +18,12 @@ public class UserService {
     private final TokenRepository tokenRepository;
     private final Random randomGenerator = new Random(2589321423984L);
 
-    private static BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, TokenRepository tokenRepository){
+    public UserService(UserRepository userRepository, TokenRepository tokenRepository, BCryptPasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User signup(String email, String name, String password){
@@ -32,13 +33,13 @@ public class UserService {
         User user = new User();
         user.setEmail(email);
         user.setName(name);
-        user.setHashedPassword(password);
+        user.setHashedPassword(passwordEncoder.encode(password));
         return userRepository.save(user);
     }
 
     public Token login(String email, String password) {
         User user = this.userRepository.findByEmail(email);
-        if (user != null && user.getHashedPassword().equals(password)){
+        if (user != null && user.getHashedPassword().equals(passwordEncoder.encode(password))){
             Token token = new Token();
             token.setUser(user);
             return this.tokenRepository.save(token);
