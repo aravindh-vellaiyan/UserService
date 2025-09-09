@@ -35,6 +35,12 @@ public class UserController {
         return response;
     }
 
+    @PostMapping("/closeaccount")
+    public MessageResponse closeAccount(){
+//        userService.closeUserAccount();
+        return null;
+    }
+
     private SignupResponse toSignupResponseDTO(User user) {
         if (user == null) {
             return null;

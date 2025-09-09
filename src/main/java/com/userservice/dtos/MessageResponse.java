@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ErrorResponse {
+public class MessageResponse {
     private String message;
 }
