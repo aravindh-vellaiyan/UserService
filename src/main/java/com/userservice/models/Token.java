@@ -23,13 +23,13 @@ public class Token extends BaseModel {
     private User user;
     private long expiryAt;
 
-    @PrePersist
-    public void generateToken() {
-        if (token == null) {
-            token = UUID.randomUUID().toString();
-        }
-        if(expiryAt == 0) {
-            expiryAt = System.currentTimeMillis() + (60 * 60 * 1000);
-        }
-    }
+//    @PrePersist
+//    public void generateToken() {
+//        if (token == null) {
+//            token = UUID.randomUUID().toString();
+//        }
+//        if(expiryAt == 0) {
+//            expiryAt = System.currentTimeMillis() + (60 * 60 * 1000);
+//        }
+//    }
 }

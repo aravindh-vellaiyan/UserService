@@ -28,9 +28,9 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public LogoutResponse logout(@RequestBody LogoutRequest logoutRequest){
+    public MessageResponse logout(@RequestBody LogoutRequest logoutRequest){
         userService.invalidateToken(logoutRequest.getToken());
-        LogoutResponse response = new LogoutResponse();
+        MessageResponse response = new MessageResponse();
         response.setMessage("Session logged out successfully.!");
         return response;
     }

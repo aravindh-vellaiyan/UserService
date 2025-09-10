@@ -8,17 +8,19 @@ import com.userservice.repositories.TokenRepository;
 import com.userservice.repositories.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Random;
+import org.apache.commons.text.RandomStringGenerator;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
-    private final Random randomGenerator = new Random(2589321423984L);
+    private final RandomStringGenerator generator = new RandomStringGenerator.Builder()
+            .withinRange('a', 'z')
+            .withinRange('A', 'Z')
+            .build();
 
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, TokenRepository tokenRepository, BCryptPasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
@@ -42,6 +44,7 @@ public class UserService {
         if (user != null && user.getHashedPassword().equals(passwordEncoder.encode(password))){
             Token token = new Token();
             token.setUser(user);
+            token.setToken(generator.generate(128));
             return this.tokenRepository.save(token);
         }
         throw new AuthenticationException("Check the user email or password.!");
