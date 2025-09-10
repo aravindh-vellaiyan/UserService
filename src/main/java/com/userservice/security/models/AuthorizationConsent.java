@@ -10,6 +10,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "`authorizationConsent`")
 @IdClass(AuthorizationConsent.AuthorizationConsentId.class)
+@Getter
+@Setter
 public class AuthorizationConsent {
     @Id
     private String registeredClientId;

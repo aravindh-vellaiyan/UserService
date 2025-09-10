@@ -5,7 +5,6 @@ import com.userservice.exceptions.UserException;
 import com.userservice.models.Token;
 import com.userservice.models.User;
 import com.userservice.services.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/user")
