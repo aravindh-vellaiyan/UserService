@@ -1,5 +1,6 @@
 package com.userservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class User extends BaseModel{
     private String name;
     @ManyToMany
     private List<Role> roles;
+    @JsonIgnore
     private String hashedPassword;
     private String email;
     private boolean isEmailVerified;
