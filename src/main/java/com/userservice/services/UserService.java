@@ -13,6 +13,7 @@ import org.apache.commons.text.RandomStringGenerator;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -43,10 +44,10 @@ public class UserService {
     }
 
     public Token login(String email, String password) {
-        User user = this.userRepository.findByEmail(email);
-        if (user != null && passwordEncoder.matches(password, user.getHashedPassword())){
+        Optional<User> user = this.userRepository.findByEmail(email);
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getHashedPassword())){
             Token token = new Token();
-            token.setUser(user);
+            token.setUser(user.get());
             token.setToken(generator.generate(128));
             LocalDate localDate = LocalDate.now();
             LocalDate oneDayLater = localDate.plusDays(1);
