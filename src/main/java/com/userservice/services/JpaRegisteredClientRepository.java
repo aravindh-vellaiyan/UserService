@@ -47,7 +47,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
     @Override
     public RegisteredClient findById(String id) {
         Assert.hasText(id, "id cannot be empty");
-        return this.clientRepository.findById(Long.parseLong(id)).map(this::toObject).orElse(null);
+        return this.clientRepository.findById(id).map(this::toObject).orElse(null);
     }
 
     @Override
