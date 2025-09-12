@@ -58,21 +58,22 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
     @Override
     public void save(OAuth2Authorization authorization) {
         Assert.notNull(authorization, "authorization cannot be null");
+
         Map<String, Object> attributes = new HashMap<>(authorization.getAttributes());
 
         Object principal = attributes.get(Principal.class.getName());
         if (principal instanceof CustomUserDetails userDetails) {
+            // ✅ Store only primitive values, not the full object
             attributes.put("principalName", userDetails.getUsername());
-            attributes.remove(Principal.class.getName()); // ✅ avoid serializing whole object
+            attributes.put("authorities", userDetails.getAuthorities());
+            attributes.remove(Principal.class.getName()); // remove the heavy object
         }
 
         OAuth2Authorization updated = OAuth2Authorization.from(authorization)
-                .attributes(a -> {
-                    a.clear();
-                    a.putAll(attributes);
-                })
+                .attributes(attrs -> attrs.putAll(attributes))
                 .build();
 
+        // Now persist without CustomUserDetails leaking into JSON
         this.authorizationRepository.save(toEntity(updated));
     }
 
