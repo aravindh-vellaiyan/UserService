@@ -1,6 +1,8 @@
 package com.userservice.services;
 
+import java.security.Principal;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,6 +13,7 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.userservice.security.models.Authorization;
+import com.userservice.security.models.CustomUserDetails;
 import com.userservice.security.repositories.AuthorizationRepository;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
@@ -55,7 +58,22 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
     @Override
     public void save(OAuth2Authorization authorization) {
         Assert.notNull(authorization, "authorization cannot be null");
-        this.authorizationRepository.save(toEntity(authorization));
+        Map<String, Object> attributes = new HashMap<>(authorization.getAttributes());
+
+        Object principal = attributes.get(Principal.class.getName());
+        if (principal instanceof CustomUserDetails userDetails) {
+            attributes.put("principalName", userDetails.getUsername());
+            attributes.remove(Principal.class.getName()); // ✅ avoid serializing whole object
+        }
+
+        OAuth2Authorization updated = OAuth2Authorization.from(authorization)
+                .attributes(a -> {
+                    a.clear();
+                    a.putAll(attributes);
+                })
+                .build();
+
+        this.authorizationRepository.save(toEntity(updated));
     }
 
     @Override
